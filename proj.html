@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #449d7a;
+            padding: 1rem 2rem;
+            color: white;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: #c5e0c5;
+            text-decoration: none;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link.active {
+            color: white;
+        }
+        
+        .user-icon {
+            font-size: 1.8rem;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        
+        .btn {
+            background-color: #449d7a;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn:hover {
+            background-color: #3a8d6d;
+        }
+        
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+        
+        .projects-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state-text {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            color: #333;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-note {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 0.3rem;
+        }
+        
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .project-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .project-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .project-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .project-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .project-meta {
+            padding: 1rem 1.2rem;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meta-label {
+            font-size: 0.75rem;
+            color: #777;
+            margin-bottom: 0.2rem;
+        }
+        
+        .meta-value {
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .team-members {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .member-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .project-body {
+            padding: 1.2rem;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1rem;
+        }
+        
+        .tab-button {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab-button.active {
+            color: #449d7a;
+            border-color: #449d7a;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-icon {
+            font-size: 2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .file-categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .file-category {
+            background: none;
+            border: none;
+            padding: 0.3rem 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .file-category.active {
+            color: #449d7a;
+            font-weight: 500;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .file-item {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        
+        .file-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-preview {
+            height: 100px;
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .file-icon {
+            font-size: 2rem;
+            color: #ccc;
+        }
+        
+        .file-details {
+            padding: 0.5rem;
+        }
+        
+        .file-name {
+            font-size: 0.8rem;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 0.2rem;
+        }
+        
+        .file-info {
+            font-size: 0.7rem;
+            color: #999;
+        }
+        
+        .action-buttons {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            background-color: #f0f0f0;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .action-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #555;
+        }
+        
+        .edit-btn svg {
+            fill: #449d7a;
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .file-list {
+            margin-top: 1rem;
+        }
+        
+        .file-item-row {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .file-item-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .file-item-details {
+            flex-grow: 1;
+        }
+        
+        .file-item-name {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 0.2rem;
+        }
+        
+        .file-item-size {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .file-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .file-action-btn {
+            background: none;
+            border: none;
+            color: #449d7a;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .file-action-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .details-content {
+            padding: 1rem 0;
+        }
+        
+        .details-row {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .details-label {
+            width: 150px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .details-value {
+            color: #333;
+            flex-grow: 1;
+        }
+        
+        .member-list {
+            list-style: none;
+        }
+        
+        .member-item {
+            margin-bottom: 0.3rem;
+        }
+        
+        .save-details-btn {
+            margin-top: 1rem;
+        }
+        .modal-body {
+            padding: 1rem;
+            max-height: calc(80vh - 100px);
+            overflow-y: auto;
+        }
+
+        .modal-body img {
+            max-width: 100%;
+            max-height: 70vh;
+            display: block;
+            margin: 0 auto;
+        }
+        /* Add to your existing styles */
+.file-preview-container {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-preview-loading {
+    color: #666;
+    font-style: italic;
+}
+
+.file-preview-image {
+    max-width: 100%;
+    max-height: 70vh;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.file-preview-pdf,
+.file-preview-video,
+.file-preview-generic {
+    text-align: center;
+    padding: 20px;
+}
+
+.file-preview-pdf svg,
+.file-preview-video svg,
+.file-preview-generic svg {
+    margin-bottom: 15px;
+}
+
+.file-preview-note {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 15px;
+    font-style: italic;
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="white">
+                <path d="M12,2L4,7v10l8,5l8-5V7L12,2z M12,4.4l6,3.8v7.6l-6,3.8L6,15.8V8.2L12,4.4z"/>
+                <path d="M12,6L7,9v6l5,3l5-3V9L12,6z M12,8.4l3,1.8v3.6l-3,1.8L9,13.8v-3.6L12,8.4z"/>
+            </svg>
+            ProjectHub
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link active">My Projects</a>
+            <a href="#" class="nav-link active">All Projects</a>
+        </div>
+        <div class="user-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </div>
+    </nav>
+    
+    <div class="content-container">
+        <div class="section-header">
+            <h2 class="section-title">My Projects</h2>
+            <button class="btn" id="add-project-btn">
+                <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                Add Project
+            </button>
+        </div>
+        
+        <div class="projects-container">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="#ccc">
+                        <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                    </svg>
+                </div>
+                <p class="empty-state-text">You don't have any projects yet. Create your first project to get started!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Project Modal -->
+    <div class="modal" id="add-project-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Project</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="project-form">
+                <div class="form-group">
+                    <label class="form-label" for="project-title">Project Title*</label>
+                    <input type="text" class="form-control" id="project-title" placeholder="Enter project title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="project-description">Description*</label>
+                    <textarea class="form-control" id="project-description" placeholder="Briefly describe your project" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-year">Class*</label>
+                    <select class="form-control" id="edit-project-year" required>
+                        <option value="">Select Class</option>
+                        <option value="FE">FE (First Year)</option>
+                        <option value="SE">SE (Second Year)</option>
+                        <option value="TE">TE (Third Year)</option>
+                        <option value="BE">BE (Final Year)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-department">Department*</label>
+                    <select class="form-control" id="edit-project-department" required>
+                        <option value="">Select Department</option>
+                        <option value="Computer Engineering">Computer Engineering</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="AIDS">Artificial Intelligence & Data Science</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Electronics & Telecommunication">Electronics & Telecommunication</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="project-team">Team Member Emails</label>
+                    <input type="text" class="form-control" id="project-team" placeholder="Enter team member emails separated by commas">
+                    <div class="form-note">E.g., john.doe@example.com, jane.smith@example.com</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="project-guide">Project Guide/Mentor</label>
+                    <input type="text" class="form-control" id="project-guide" placeholder="Enter guide or mentor name">
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-cancel" id="cancel-project">Cancel</button>
+                    <button type="submit" class="btn">Create Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Project Modal -->
+    <div class="modal" id="edit-project-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Project</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="edit-project-form">
+                <input type="hidden" id="edit-project-id">
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-title">Project Title*</label>
+                    <input type="text" class="form-control" id="edit-project-title" placeholder="Enter project title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-description">Description*</label>
+                    <textarea class="form-control" id="edit-project-description" placeholder="Briefly describe your project" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-year">Class*</label>
+                    <select class="form-control" id="edit-project-year" required>
+                        <option value="">Select Class</option>
+                        <option value="FE">FE (First Year)</option>
+                        <option value="SE">SE (Second Year)</option>
+                        <option value="TE">TE (Third Year)</option>
+                        <option value="BE">BE (Final Year)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-department">Department*</label>
+                    <select class="form-control" id="edit-project-department" required>
+                        <option value="">Select Department</option>
+                        <option value="Computer Engineering">Computer Engineering</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="AIDS">Artificial Intelligence & Data Science</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Electronics & Telecommunication">Electronics & Telecommunication</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-team">Team Member Emails</label>
+                    <input type="text" class="form-control" id="edit-project-team" placeholder="Enter team member emails separated by commas">
+                    <div class="form-note">E.g., john.doe@example.com, jane.smith@example.com</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="edit-project-guide">Project Guide/Mentor</label>
+                    <input type="text" class="form-control" id="edit-project-guide" placeholder="Enter guide or mentor name">
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-cancel" id="cancel-edit-project">Cancel</button>
+                    <button type="submit" class="btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Project Template for JavaScript to use -->
+    <template id="project-template">
+        <div class="project-card" data-project-id="">
+            <div class="project-header">
+                <h3 class="project-title"></h3>
+                <p class="project-description"></p>
+                <div class="action-buttons">
+                    <button class="action-btn edit-btn" title="Edit Project">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="project-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Team</span>
+                    <div class="team-members"></div>
+                </div>
+                
+                <div class="meta-item">
+                    <span class="meta-label">Department</span>
+                    <span class="meta-value department-name"></span>
+                </div>
+                
+                <div class="meta-item">
+                    <span class="meta-label">Guide</span>
+                    <span class="meta-value guide-name"></span>
+                </div>
+            </div>
+            
+            <div class="project-body">
+                <div class="tab-navigation">
+                    <button class="tab-button active" data-tab="files">Files</button>
+                    <button class="tab-button" data-tab="details">Details</button>
+                </div>
+                
+                <div class="tab-content active" id="files-tab">
+                    <div class="upload-area">
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="#ccc">
+                                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                            </svg>
+                        </div>
+                        <p class="upload-text">Drag files here or click the button below</p>
+                        <button class="upload-btn">Browse Files</button>
+                        <input type="file" id="file-input" multiple>
+                    </div>
+                    
+                    <div class="file-categories">
+                        <button class="file-category active">All</button>
+                        <button class="file-category">Images</button>
+                        <button class="file-category">Documents</button>
+                        <button class="file-category">Videos</button>
+                    </div>
+                    
+                    <div class="files-container">
+                        <div class="files-grid">
+                            <!-- Files will be added here -->
+                        </div>
+                        <div class="file-list">
+                            <!-- List view of files -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="details-tab">
+                    <div class="details-content">
+                        <div class="details-row">
+                            <div class="details-label">Project Title:</div>
+                            <div class="details-value project-title-value"></div>
+                        </div>
+                        <div class="details-row">
+                            <div class="details-label">Description:</div>
+                            <div class="details-value project-description-value"></div>
+                        </div>
+                        <div class="details-row">
+                            <div class="details-label">Department:</div>
+                            <div class="details-value department-value"></div>
+                        </div>
+                        <div class="details-row">
+                            <div class="details-label">Team Members:</div>
+                            <div class="details-value">
+                                <ul class="member-list"></ul>
+                            </div>
+                        </div>
+                        <div class="details-row">
+                            <div class="details-label">Guide/Mentor:</div>
+                            <div class="details-value guide-value"></div>
+                        </div>
+                        <button class="btn save-details-btn">Save Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- File item template -->
+    <template id="file-item-template">
+        <div class="file-item">
+            <div class="file-preview">
+                <svg class="file-icon" width="48" height="48" viewBox="0 0 24 24" fill="#ccc">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+            </div>
+            <div class="file-details">
+                <div class="file-name"></div>
+                <div class="file-info"></div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- File row template -->
+    <template id="file-row-template">
+        <div class="file-item-row">
+            <div class="file-item-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#ccc">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+            </div>
+            <div class="file-item-details">
+                <div class="file-item-name"></div>
+                <div class="file-item-size"></div>
+            </div>
+            <div class="file-item-actions">
+                <button class="file-action-btn file-view-btn">View</button>
+                <button class="file-action-btn file-delete-btn">Delete</button>
+            </div>
+        </div>
+    </template>
+
+    
+    <script>
+    // Modal functionality
+    const addProjectBtn = document.getElementById('add-project-btn');
+    const addProjectModal = document.getElementById('add-project-modal');
+    const editProjectModal = document.getElementById('edit-project-modal');
+    const closeModalBtns = document.querySelectorAll('.modal-close');
+    const cancelProjectBtn = document.getElementById('cancel-project');
+    const cancelEditProjectBtn = document.getElementById('cancel-edit-project');
+    const projectForm = document.getElementById('project-form');
+    const editProjectForm = document.getElementById('edit-project-form');
+    const projectsContainer = document.querySelector('.projects-container');
+    const emptyState = document.querySelector('.empty-state');
+    const projectTemplate = document.getElementById('project-template');
+    const fileItemTemplate = document.getElementById('file-item-template');
+    const fileRowTemplate = document.getElementById('file-row-template');
+    
+    // Project counter for unique IDs
+    let projectCounter = 0;
+    
+    // Store project data
+    const projectsData = {};
+    
+    // Open add modal
+    addProjectBtn.addEventListener('click', () => {
+        addProjectModal.classList.add('active');
+    });
+    
+    // Close modals
+    const closeModal = (modal) => {
+        modal.classList.remove('active');
+        if (modal === addProjectModal) {
+            projectForm.reset();
+        } else if (modal === editProjectModal) {
+            editProjectForm.reset();
+        }
+    };
+    
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const modal = e.target.closest('.modal');
+            closeModal(modal);
+        });
+    });
+    
+    cancelProjectBtn.addEventListener('click', () => closeModal(addProjectModal));
+    cancelEditProjectBtn.addEventListener('click', () => closeModal(editProjectModal));
+    
+    // Close modal if clicked outside
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal(modal);
+            }
+        });
+    });
+    
+    // Format file size
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+    
+    // Get file icon based on type
+    function getFileIcon(fileName) {
+        const extension = fileName.split('.').pop().toLowerCase();
+        let path = '';
+        
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'].includes(extension)) {
+            path = 'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z';
+        } else if (['pdf'].includes(extension)) {
+            path = 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z';
+        } else if (['doc', 'docx'].includes(extension)) {
+            path = 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z';
+        } else if (['xls', 'xlsx'].includes(extension)) {
+            path = 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z';
+        } else if (['ppt', 'pptx'].includes(extension)) {
+            path = 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z';
+        } else if (['mp4', 'mov', 'avi', 'mkv'].includes(extension)) {
+            path = 'M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z';
+        } else if (['zip', 'rar', '7z'].includes(extension)) {
+            path = 'M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-4 10h-2v-2h2v2zm0-4h-2V9h2v3z';
+        } else {
+            path = 'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z';
+        }
+        
+        return path;
+    }
+    
+    // Create avatar for team member
+    function createMemberAvatar(email) {
+        const avatar = document.createElement('div');
+        avatar.className = 'member-avatar';
+        
+        // Get initials from email
+        const username = email.split('@')[0];
+        let initials = username.charAt(0).toUpperCase();
+        
+        // Try to get second initial if available
+        const parts = username.split(/[._-]/);
+        if (parts.length > 1) {
+            initials += parts[1].charAt(0).toUpperCase();
+        }
+        
+        avatar.textContent = initials;
+        avatar.title = email;
+        
+        return avatar;
+    }
+    
+    // Add file to project - Updated function
+function addFileToProject(projectId, file) {
+    if (!projectsData[projectId].files) {
+        projectsData[projectId].files = [];
+    }
+
+    const fileData = {
+        id: Date.now() + Math.floor(Math.random() * 1000), // More unique ID
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        lastModified: file.lastModified,
+        file: file
+    };
+
+    projectsData[projectId].files.push(fileData);
+
+    // Add to UI
+    const projectCard = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+    if (projectCard) {
+        const filesGrid = projectCard.querySelector('.files-grid');
+        const fileList = projectCard.querySelector('.file-list');
+        
+        // Add to grid view
+        const fileItem = fileItemTemplate.content.cloneNode(true);
+        const fileItemElement = fileItem.querySelector('.file-item');
+        fileItemElement.setAttribute('data-file-id', fileData.id);
+        
+        const fileIcon = fileItem.querySelector('.file-icon');
+        fileIcon.setAttribute('d', getFileIcon(file.name));
+        fileItem.querySelector('.file-name').textContent = file.name;
+        fileItem.querySelector('.file-info').textContent = formatFileSize(file.size);
+        filesGrid.appendChild(fileItem);
+
+        // Add to list view
+        const fileRow = fileRowTemplate.content.cloneNode(true);
+        const fileRowElement = fileRow.querySelector('.file-item-row');
+        fileRowElement.setAttribute('data-file-id', fileData.id);
+        
+        const rowIcon = fileRow.querySelector('svg');
+        rowIcon.setAttribute('d', getFileIcon(file.name));
+        fileRow.querySelector('.file-item-name').textContent = file.name;
+        fileRow.querySelector('.file-item-size').textContent = formatFileSize(file.size);
+        
+        // Add view button functionality
+        const viewBtn = fileRow.querySelector('.file-view-btn');
+        viewBtn.addEventListener('click', () => {
+            // Create a modal to display the file preview
+            const previewModal = document.createElement('div');
+            previewModal.className = 'modal active';
+            previewModal.innerHTML = `
+                <div class="modal-content" style="max-width: 80%; max-height: 80vh;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">File Preview: ${file.name}</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body" style="text-align: center; overflow: auto;">
+                        ${getFilePreviewContent(file)}
+                    </div>
+                </div>
+            `;
+            
+            // Update the getFilePreviewContent function
+function getFilePreviewContent(file) {
+    const extension = file.name.split('.').pop().toLowerCase();
+    const fileSize = formatFileSize(file.size);
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'].includes(extension)) {
+        // Image preview
+        const reader = new FileReader();
+        let previewContent = '<div class="file-preview-loading">Loading image preview...</div>';
+        
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'file-preview-image';
+            const previewContainer = document.querySelector('.file-preview-container');
+            if (previewContainer) {
+                previewContainer.innerHTML = '';
+                previewContainer.appendChild(img);
+            }
+        };
+        
+        reader.readAsDataURL(file);
+        return `<div class="file-preview-container">${previewContent}</div>`;
+        
+    } else if (['pdf'].includes(extension)) {
+        // PDF preview placeholder
+        return `
+            <div class="file-preview-pdf">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="#449d7a">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+                <h4>PDF Preview</h4>
+                <p>${file.name}</p>
+                <p>${fileSize}</p>
+                <p class="file-preview-note">In a full application, this would show an embedded PDF viewer</p>
+            </div>
+        `;
+        
+    } else if (['mp4', 'mov', 'avi', 'mkv'].includes(extension)) {
+        // Video preview placeholder
+        return `
+            <div class="file-preview-video">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="#449d7a">
+                    <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                </svg>
+                <h4>Video Preview</h4>
+                <p>${file.name}</p>
+                <p>${fileSize}</p>
+                <p class="file-preview-note">In a full application, this would show a video player</p>
+            </div>
+        `;
+        
+    } else {
+        // Generic file preview
+        return `
+            <div class="file-preview-generic">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="#449d7a">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+                <h4>File Preview</h4>
+                <p>${file.name}</p>
+                <p>${fileSize}</p>
+                <p class="file-preview-note">No preview available for ${extension.toUpperCase()} files</p>
+            </div>
+        `;
+    }
+}
+            document.body.appendChild(previewModal);
+            
+            // Close modal functionality
+            const closeBtn = previewModal.querySelector('.modal-close');
+            closeBtn.addEventListener('click', () => {
+                previewModal.remove();
+            });
+            
+            previewModal.addEventListener('click', (e) => {
+                if (e.target === previewModal) {
+                    previewModal.remove();
+                }
+            });
+        });
+        
+        // Add delete button functionality
+        const deleteBtn = fileRow.querySelector('.file-delete-btn');
+        deleteBtn.addEventListener('click', () => {
+            if (confirm(`Are you sure you want to delete ${file.name}?`)) {
+                // Remove from data
+                const fileIndex = projectsData[projectId].files.findIndex(f => f.id === fileData.id);
+                if (fileIndex !== -1) {
+                    projectsData[projectId].files.splice(fileIndex, 1);
+                }
+                
+                // Remove from UI
+                fileRowElement.remove();
+                const gridFile = projectCard.querySelector(`.file-item[data-file-id="${fileData.id}"]`);
+                if (gridFile) gridFile.remove();
+            }
+        });
+        
+        fileList.appendChild(fileRow);
+    }
+}
+
+// Delete file from project - Simplified function
+function deleteFileFromProject(projectId, fileId) {
+    const project = projectsData[projectId];
+    if (!project || !project.files) return;
+
+    const fileIndex = project.files.findIndex(f => f.id === fileId);
+    if (fileIndex !== -1) {
+        project.files.splice(fileIndex, 1);
+        
+        // Update UI
+        const projectCard = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+        if (projectCard) {
+            // Remove from both views
+            projectCard.querySelectorAll(`[data-file-id="${fileId}"]`).forEach(el => el.remove());
+        }
+    }
+}
+
+// Delete entire project
+function deleteProject(projectId) {
+        if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+            // Remove from data
+            delete projectsData[projectId];
+            
+            // Remove from UI
+            const projectCard = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+            if (projectCard) {
+                projectCard.remove();
+            }
+            
+            // Show empty state if no projects left
+            if (Object.keys(projectsData).length === 0) {
+                emptyState.style.display = 'block';
+            }
+        }
+    }
+
+
+    // Create new project
+    function createProject(title, description, department, teamEmails, guide) {
+        const projectId = 'project-' + projectCounter++;
+        
+        // Store project data
+        projectsData[projectId] = {
+            id: projectId,
+            title: title,
+            description: description,
+            department: department,
+            team: teamEmails ? teamEmails.split(',').map(email => email.trim()) : [],
+            guide: guide,
+            files: []
+        };
+        
+        // Create project card
+        const projectCard = projectTemplate.content.cloneNode(true);
+        const cardElement = projectCard.querySelector('.project-card');
+        cardElement.setAttribute('data-project-id', projectId);
+        
+        // Set project info
+        cardElement.querySelector('.project-title').textContent = title;
+        cardElement.querySelector('.project-title-value').textContent = title;
+        cardElement.querySelector('.project-description').textContent = description;
+        cardElement.querySelector('.project-description-value').textContent = description;
+        cardElement.querySelector('.department-name').textContent = department;
+        cardElement.querySelector('.department-value').textContent = department;
+        cardElement.querySelector('.guide-name').textContent = guide || 'Not specified';
+        cardElement.querySelector('.guide-value').textContent = guide || 'Not specified';
+        
+        // Add team members
+        const teamContainer = cardElement.querySelector('.team-members');
+        const memberList = cardElement.querySelector('.member-list');
+        
+        if (projectsData[projectId].team.length > 0) {
+            projectsData[projectId].team.forEach(email => {
+                teamContainer.appendChild(createMemberAvatar(email));
+                
+                const memberItem = document.createElement('li');
+                memberItem.className = 'member-item';
+                memberItem.textContent = email;
+                memberList.appendChild(memberItem);
+            });
+        } else {
+            const noMembers = document.createElement('span');
+            noMembers.textContent = 'No team members';
+            teamContainer.appendChild(noMembers);
+            
+            const memberItem = document.createElement('li');
+            memberItem.className = 'member-item';
+            memberItem.textContent = 'No team members';
+            memberList.appendChild(memberItem);
+        }
+        
+        // Add to DOM
+        projectsContainer.insertBefore(projectCard, emptyState);
+        emptyState.style.display = 'none';
+        
+        // Setup tab navigation
+        const tabButtons = cardElement.querySelectorAll('.tab-button');
+        const tabContents = cardElement.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Setup file upload
+        const uploadBtn = cardElement.querySelector('.upload-btn');
+        const fileInput = cardElement.querySelector('#file-input');
+        
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            Array.from(e.target.files).forEach(file => {
+                addFileToProject(projectId, file);
+            });
+            fileInput.value = ''; // Reset input
+        });
+        
+        // Setup drag and drop for files
+        const uploadArea = cardElement.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#449d7a';
+            uploadArea.style.backgroundColor = '#f0f8f0';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.backgroundColor = 'transparent';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.backgroundColor = 'transparent';
+            
+            if (e.dataTransfer.files.length > 0) {
+                Array.from(e.dataTransfer.files).forEach(file => {
+                    addFileToProject(projectId, file);
+                });
+            }
+        });
+        
+        // Setup edit button
+        const editBtn = cardElement.querySelector('.edit-btn');
+        editBtn.addEventListener('click', () => {
+            openEditModal(projectId);
+        });
+        
+
+        // Add delete project button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'action-btn delete-btn';
+        deleteBtn.title = 'Delete Project';
+        deleteBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="#ff4444"/>
+            </svg>
+        `;
+        deleteBtn.addEventListener('click', () => {
+            deleteProject(projectId);
+        });
+
+
+        // Insert delete button next to edit button
+        const actionButtons = cardElement.querySelector('.action-buttons');
+        actionButtons.insertBefore(deleteBtn, editBtn.nextSibling);
+
+        // Setup save details button
+        const saveDetailsBtn = cardElement.querySelector('.save-details-btn');
+        saveDetailsBtn.addEventListener('click', () => {
+            saveProjectDetails(projectId);
+        });
+    }
+    
+    // Open edit modal with project data
+    function openEditModal(projectId) {
+        const project = projectsData[projectId];
+        if (!project) return;
+        
+        document.getElementById('edit-project-id').value = projectId;
+        document.getElementById('edit-project-title').value = project.title;
+        document.getElementById('edit-project-description').value = project.description;
+        document.getElementById('edit-project-department').value = project.department;
+        document.getElementById('edit-project-team').value = project.team.join(', ');
+        document.getElementById('edit-project-guide').value = project.guide || '';
+        
+        editProjectModal.classList.add('active');
+    }
+    
+    // Save project details from edit form
+    function saveProjectDetails(projectId) {
+        const project = projectsData[projectId];
+        if (!project) return;
+        
+        const projectCard = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+        if (!projectCard) return;
+        
+        // Update project data
+        project.title = projectCard.querySelector('.project-title-value').textContent;
+        project.description = projectCard.querySelector('.project-description-value').textContent;
+        project.department = projectCard.querySelector('.department-value').textContent;
+        
+        // Update UI
+        projectCard.querySelector('.project-title').textContent = project.title;
+        projectCard.querySelector('.project-description').textContent = project.description;
+        projectCard.querySelector('.department-name').textContent = project.department;
+    }
+    
+    // Handle new project form submission
+    projectForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('project-title').value;
+        const description = document.getElementById('project-description').value;
+        const department = document.getElementById('project-department').value;
+        const teamEmails = document.getElementById('project-team').value;
+        const guide = document.getElementById('project-guide').value;
+        
+        createProject(title, description, department, teamEmails, guide);
+        closeModal(addProjectModal);
+    });
+    
+    // Handle edit project form submission
+    editProjectForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const projectId = document.getElementById('edit-project-id').value;
+        const project = projectsData[projectId];
+        if (!project) return;
+        
+        // Update project data
+        project.title = document.getElementById('edit-project-title').value;
+        project.description = document.getElementById('edit-project-description').value;
+        project.department = document.getElementById('edit-project-department').value;
+        project.team = document.getElementById('edit-project-team').value.split(',').map(email => email.trim());
+        project.guide = document.getElementById('edit-project-guide').value;
+        
+        // Update UI
+        const projectCard = document.querySelector(`.project-card[data-project-id="${projectId}"]`);
+        if (projectCard) {
+            projectCard.querySelector('.project-title').textContent = project.title;
+            projectCard.querySelector('.project-title-value').textContent = project.title;
+            projectCard.querySelector('.project-description').textContent = project.description;
+            projectCard.querySelector('.project-description-value').textContent = project.description;
+            projectCard.querySelector('.department-name').textContent = project.department;
+            projectCard.querySelector('.department-value').textContent = project.department;
+            projectCard.querySelector('.guide-name').textContent = project.guide || 'Not specified';
+            projectCard.querySelector('.guide-value').textContent = project.guide || 'Not specified';
+            
+            // Update team members
+            const teamContainer = projectCard.querySelector('.team-members');
+            const memberList = projectCard.querySelector('.member-list');
+            
+            teamContainer.innerHTML = '';
+            memberList.innerHTML = '';
+            
+            if (project.team.length > 0) {
+                project.team.forEach(email => {
+                    teamContainer.appendChild(createMemberAvatar(email));
+                    
+                    const memberItem = document.createElement('li');
+                    memberItem.className = 'member-item';
+                    memberItem.textContent = email;
+                    memberList.appendChild(memberItem);
+                });
+            } else {
+                const noMembers = document.createElement('span');
+                noMembers.textContent = 'No team members';
+                teamContainer.appendChild(noMembers);
+                
+                const memberItem = document.createElement('li');
+                memberItem.className = 'member-item';
+                memberItem.textContent = 'No team members';
+                memberList.appendChild(memberItem);
+            }
+        }
+        
+        closeModal(editProjectModal);
+    });
+    
+    // Sample data for demonstration
+    document.addEventListener('DOMContentLoaded', () => {
+        // Create a sample project
+        createProject(
+            'E-commerce Website', 
+            'A complete e-commerce platform with product listings, cart functionality, and payment processing.', 
+            'Computer Science', 
+            'john.doe@example.com, jane.smith@example.com, mike.johnson@example.com', 
+            'Prof. Williams'
+        );
+        
+        // Add sample files after a short delay to ensure the project card is created
+        setTimeout(() => {
+            const sampleFiles = [
+
+            ];
+            
+            sampleFiles.forEach(file => {
+                const blob = new Blob([''], { type: 'text/plain' });
+                blob.name = file.name;
+                blob.size = file.size;
+                addFileToProject('project-0', blob);
+            });
+        }, 100);
+    });
+</script>
+</body>
+</html>
